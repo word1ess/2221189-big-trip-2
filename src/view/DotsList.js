@@ -1,24 +1,20 @@
 import createElement from "../createElement";
 
-const dotsTemplate = () => {
-  `<ul class="trip-events__list">
-    </ul>`;
-};
+const dotsTemplate = () => `<ul class="trip-events__list"></ul>`;
 
 class DotsView {
-  getTemplate() {
-    return dotsTemplate;
+  get _template() {
+    return dotsTemplate();
   }
-  getElement() {
+  get _element() {
     if (!this.element) {
-      this.element = createElement(this.getTemplate());
+      this.element = createElement(this._template);
     }
-
     return this.element;
   }
 
   removeElement() {
-    this.element = null;
+    this._element = null;
   }
 }
 
