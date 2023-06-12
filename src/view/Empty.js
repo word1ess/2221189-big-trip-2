@@ -1,11 +1,16 @@
 import createElement from "../createElement";
 
-const dotsTemplate = () => `<ul class="trip-events__list"></ul>`;
+const createEmpty = (msg) => `p class="trip-events__msg">${msg}</p>`;
 
-class DotsView {
-  get _template() {
-    return dotsTemplate();
+class EmptyView {
+  constructor(msg) {
+    this._msg = msg;
   }
+
+  get _template() {
+    return createEmpty(this._msg);
+  }
+
   get _element() {
     if (!this.element) {
       this.element = createElement(this._template);
@@ -18,4 +23,4 @@ class DotsView {
   }
 }
 
-export default DotsView;
+export default EmptyView;
