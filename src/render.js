@@ -6,7 +6,7 @@
 // };
 
 const render = (component, container, place) => {
-  console.log(place, component, container);
+  console.log(place, component);
   container.insertAdjacentElement(place, component._element);
 };
 

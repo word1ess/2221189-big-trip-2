@@ -1,4 +1,4 @@
-import createElement from "../createElement";
+import AbstractView from "../framework/view/abstract-view.js";
 import { humanizeDate, humanizeTime, getDifference } from "../utils";
 
 const dotTemplate = (point, currentOffers, currentDesctination) => {
@@ -88,27 +88,26 @@ const dotTemplate = (point, currentOffers, currentDesctination) => {
     </div>
   </li>`;
 };
-class DotView {
-  constructor(point, offers, destination) {
-    this.point = point;
+class DotView extends AbstractView {
+  constructor(dot, offers, destination) {
+    super();
+    this.dot = dot;
     this.offers = offers;
     this.destination = destination;
   }
-  get _template() {
-    return dotTemplate(this.point, this.offers, this.destination);
+  get template() {
+    return dotTemplate(this.dot, this.offers, this.destination);
   }
 
-  get _element() {
-    if (!this.element) {
-      this.element = createElement(this._template);
-    }
+  setEditClickHandler = (cb) => {
+    this._callback.click = cb;
+    this.element.addEventListener("click", this._editClickHandler);
+  };
 
-    return this.element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
+  _editClickHandler = (e) => {
+    e.preventDefault();
+    this._callback.click();
+  };
 }
 
 export default DotView;
