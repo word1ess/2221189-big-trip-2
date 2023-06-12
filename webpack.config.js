@@ -14,13 +14,17 @@ module.exports = {
       patterns: [{ from: "public" }],
     }),
   ],
-  // module: {
-  //   rules: [
-  //     {
-  //       test: /\.js$/,
-  //       exclude: /(node_modules)/,
-  //       use: ["babel-loader"],
-  //     },
-  //   ],
-  // },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /(node_modules)/,
+        use: ["babel-loader"],
+      },
+      {
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader"],
+      },
+    ],
+  },
 };

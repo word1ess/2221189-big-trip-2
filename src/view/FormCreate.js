@@ -1,4 +1,4 @@
-import createElement from "../createElement";
+import AbstractView from "../framework/view/abstract-view.js";
 import { humanizeDate, humanizeTime } from "../utils";
 
 const formCreateTemplate = (allOffers, allDestination, dot = {}) => {
@@ -204,27 +204,16 @@ const formCreateTemplate = (allOffers, allDestination, dot = {}) => {
   </form>
 </li>`;
 };
-class FormCreateView {
+class FormCreateView extends AbstractView {
   constructor(offers, destination, dot) {
+    super();
     this._dot = dot;
     this._offers = offers;
     this._destination = destination;
   }
 
-  get _template() {
+  get template() {
     return formCreateTemplate(this._offers, this._destination, this._dot);
-  }
-
-  get _element() {
-    if (!this.element) {
-      this.element = createElement(this._template);
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 

@@ -1,4 +1,4 @@
-import createElement from "../createElement";
+import AbstractView from "../framework/view/abstract-view.js";
 import { humanizeDate, humanizeTime } from "../utils";
 
 const formChangeTemplate = (dot, currentOffers, currentDestination) => {
@@ -33,7 +33,7 @@ const formChangeTemplate = (dot, currentOffers, currentDestination) => {
   };
 
   const createOffersElement = () => {
-    const offersRenderElements = currentOffers["offers"].map(getTemplateOffer);
+    const offersRenderElements = currentOffers.map(getTemplateOffer);
 
     return offersRenderElements.join("");
   };
@@ -192,27 +192,39 @@ const formChangeTemplate = (dot, currentOffers, currentDestination) => {
       </form>
     </li>`;
 };
-class FormChangeView {
+class FormChangeView extends AbstractView {
   constructor(dot, offers, destination) {
+    super();
     this._dot = dot;
     this._offers = offers;
     this._destination = destination;
   }
-  get _template() {
+  get template() {
     return formChangeTemplate(this._dot, this._offers, this._destination);
   }
+  setFormSubmitHandler = (cb) => {
+    this._callback.submit = cb;
+    this.element
+      .querySelector("form")
+      .addEventListener("submit", this._formSubmitHandler);
+  };
 
-  get _element() {
-    if (!this.element) {
-      this.element = createElement(this._template);
-    }
+  _formSubmitHandler = (e) => {
+    e.preventDefault();
+    this._callback.submit();
+  };
 
-    return this.element;
-  }
+  setButtonClickHandler = (cb) => {
+    this._callback.click = cb;
+    this.element
+      .querySelector(".event__rollup-btn")
+      .addEventListener("click", this._buttonClickHandler);
+  };
 
-  removeElement() {
-    this._element = null;
-  }
+  _buttonClickHandler = (e) => {
+    e.preventDefault();
+    this._callback.click();
+  };
 }
 
 export default FormChangeView;
