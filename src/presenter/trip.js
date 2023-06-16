@@ -5,6 +5,7 @@ import FormCreateView from "../view/FormCreate";
 import FormChangeView from "../view/FormChange";
 import SortView from "../view/Sort";
 import EmptyView from "../view/Empty";
+import generateSortedDots from "../data/sorted.js";
 
 class TripView {
   constructor(container, dotsModel) {
@@ -12,6 +13,7 @@ class TripView {
     this._container = container;
     this._dotsModel = dotsModel;
     this._listDots = this._dotsModel.dots;
+    this._sortedDots = generateSortedDots(this._dotsModel._dots);
   }
 
   init() {
@@ -20,7 +22,7 @@ class TripView {
 
   _renderWay() {
     if (this._listDots.length != 0) {
-      render(new SortView(), this._container, "beforeend");
+      render(new SortView(this._sortedDots), this._container, "beforeend");
       render(this._component, this._container, "beforeend");
       render(
         new FormCreateView(
