@@ -37,6 +37,35 @@ const TYPES_POINT = [
   "restaurant",
 ];
 
+const FILTERS_TYPE = {
+  EVERYTHING: "everything",
+  FUTURE: "future",
+  PAST: "past",
+};
+
+const FILTERS_MESSAGE = {
+  EVERYTHING: "Click New Event to create your first point",
+  FUTURE: "There are no future events now",
+  PAST: "There are no past events now",
+};
+
+const SORTED_TYPE = {
+  DAY: "day",
+  TIME: "time",
+  PRICE: "price",
+  EVENT: "event",
+  OFFERS: "offers",
+};
+
 const COUNT_DOT = 20;
 
-export { CITIES, TITLES_OFFER, DESCRIPTIONS, TYPES_POINT, COUNT_DOT };
+export {
+  CITIES,
+  TITLES_OFFER,
+  DESCRIPTIONS,
+  TYPES_POINT,
+  COUNT_DOT,
+  FILTERS_TYPE,
+  FILTERS_MESSAGE,
+  SORTED_TYPE,
+};
