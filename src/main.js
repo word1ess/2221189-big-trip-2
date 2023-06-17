@@ -1,5 +1,5 @@
 import { render } from "./framework/render";
-import TripView from "./presenter/trip";
+import TripView from "./presenter/trip-presenter";
 import FilterView from "./view/Filters";
 import DotsModel from "./model/DotsModel";
 import generateFilter from "./data/filter";

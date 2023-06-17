@@ -32,6 +32,9 @@ const sortedDots = {
   [SORTED_TYPE.PRICE]: (dots) =>
     dots.sort((prev, next) => prev.basePrice - next.basePrice),
 };
+
+const updateItem = (items, update) =>
+  items.map((item) => (item.id === update.id ? update : item));
 export {
   getRandomInteger,
   humanizeDate,
@@ -39,4 +42,5 @@ export {
   getDifference,
   filter,
   sortedDots,
+  updateItem,
 };

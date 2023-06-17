@@ -59,6 +59,11 @@ const SORTED_TYPE = {
 
 const COUNT_DOT = 20;
 
+const MODE_FOR_DOT = {
+  EDITING: "EDITING",
+  DEFAULT: "DEFAULT",
+};
+
 export {
   CITIES,
   TITLES_OFFER,
@@ -68,4 +73,5 @@ export {
   FILTERS_TYPE,
   FILTERS_MESSAGE,
   SORTED_TYPE,
+  MODE_FOR_DOT,
 };
