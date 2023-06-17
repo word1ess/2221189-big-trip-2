@@ -79,8 +79,8 @@ class DotPresenter {
   };
 
   destroy = () => {
-    remove(prevDotComponent);
-    remove(prevDotChangeComponent);
+    remove(this._dotComponent);
+    remove(this._dotEditComponent);
   };
 
   resetView = () => {

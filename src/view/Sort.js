@@ -24,16 +24,12 @@ const createSortTemplate = () =>
     </div>
   </form>`;
 class SortView extends AbstractView {
-  constructor(sortedDots) {
-    super();
-    this._sortedDots = sortedDots;
-  }
   get template() {
-    return createSortTemplate(this._sortedDots);
+    return createSortTemplate();
   }
 
   setSortTypeChangeHandler = (cb) => {
-    this.cb.sortTypeChange = cb;
+    this._callback.sortTypeChange = cb;
     this.element.addEventListener("click", this.#sortTypeChangeHandler);
   };
 
@@ -43,7 +39,7 @@ class SortView extends AbstractView {
     }
 
     e.preventDefault();
-    this.cb.sortTypeChange(e.target.dataset.sortType);
+    this._callback.sortTypeChange(e.target.dataset.sortType);
   };
 }
 
