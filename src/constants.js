@@ -1,4 +1,25 @@
-const CITIES = ["Tokyo", "Toronto", "Cape Town", "Paris", "Milan"];
+const CITIES = [
+  {
+    id: 0,
+    city: "Tokyo",
+  },
+  {
+    id: 1,
+    city: "Toronto",
+  },
+  {
+    id: 2,
+    city: "Cape Town",
+  },
+  {
+    id: 3,
+    city: "Paris",
+  },
+  {
+    id: 4,
+    city: "Milan",
+  },
+];
 
 const DESCRIPTIONS = [
   "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",

@@ -38,7 +38,7 @@ class SortView extends AbstractView {
       return;
     }
 
-    e.preventDefault();
+    // e.preventDefault();
     this._callback.sortTypeChange(e.target.dataset.sortType);
   };
 }

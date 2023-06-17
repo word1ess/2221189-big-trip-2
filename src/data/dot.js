@@ -21,7 +21,7 @@ const generateDot = () => ({
     10,
     59
   )}:00.375Z`,
-  destination: getRandomInteger(1, 2),
+  destination: getRandomInteger(0, 4),
   isFavorite: identifyFavorite(),
   offers: [1, 2],
   type: generateTypeDot(),
