@@ -1,5 +1,8 @@
 import AbstractView from "../framework/view/abstract-view.js";
+import AbstractStatefulView from "../framework/view/abstract-stateful-view";
 import { humanizeDate, humanizeTime } from "../utils";
+import destinations from "../data/destination.js";
+import { CITIES } from "../constants.js";
 
 const formChangeTemplate = (dot, currentOffers, currentDestination) => {
   const { type, basePrice, dateFrom, dateTo, offers } = dot;
@@ -11,25 +14,20 @@ const formChangeTemplate = (dot, currentOffers, currentDestination) => {
     return "";
   };
   const getTemplateOffer = (offer) => {
-    if (offers.find((x) => x === offer["id"])) {
-      return `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox" name="event-offer-comfort" checked>
-        <label class="event__offer-label" for="event-offer-comfort-1">
+    return `<div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-${
+        offer["id"]
+      }" type="checkbox" name="event-offer-comfort" ${
+      offers.find((x) => x === offer["id"]) ? "checked" : ""
+    }>
+      <label class="event__offer-label" for="event-offer-comfort-${
+        offer["id"]
+      }">
       <span class="event__offer-title">${offer["title"]}</span>
-        &plus;&euro;&nbsp;
-        <span class="event__offer-price">${offer["price"]}</span>
-        </label>
-      </div>`;
-    } else {
-      return `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox" name="event-offer-comfort">
-        <label class="event__offer-label" for="event-offer-comfort-1">
-      <span class="event__offer-title">${offer["title"]}</span>
-        &plus;&euro;&nbsp;
-        <span class="event__offer-price">${offer["price"]}</span>
-        </label>
-      </div>`;
-    }
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${offer["price"]}</span>
+      </label>
+    </div>`;
   };
 
   const createOffersElement = () => {
@@ -192,15 +190,15 @@ const formChangeTemplate = (dot, currentOffers, currentDestination) => {
       </form>
     </li>`;
 };
-class FormChangeView extends AbstractView {
+class FormChangeView extends AbstractStatefulView {
   constructor(dot, offers, destination) {
     super();
-    this._dot = dot;
+    this._state = FormChangeView.parsePointToState(dot);
     this._offers = offers;
     this._destination = destination;
   }
   get template() {
-    return formChangeTemplate(this._dot, this._offers, this._destination);
+    return formChangeTemplate(this._state, this._offers, this._destination);
   }
   setFormSubmitHandler = (cb) => {
     this._callback.submit = cb;
@@ -211,7 +209,7 @@ class FormChangeView extends AbstractView {
 
   _formSubmitHandler = (e) => {
     e.preventDefault();
-    this._callback.submit();
+    this._callback.submit(FormChangeView.parseStateToPoint(this._state));
   };
 
   setButtonClickHandler = (cb) => {
@@ -225,6 +223,57 @@ class FormChangeView extends AbstractView {
     e.preventDefault();
     this._callback.click();
   };
+
+  _offersChangeHandler = (evt) => {
+    const checkedOfferId = Number(evt.target.id.slice(-1));
+    if (this._state.offers.includes(checkedOfferId)) {
+      this._state.offers = this._state.offers.filter(
+        (x) => x !== checkedOfferId
+      );
+    } else {
+      this._state.offers.push(checkedOfferId);
+    }
+    this.updateElement({
+      offers: this._state.offers,
+    });
+  };
+
+  _destinationChangeHandler = (evt) => {
+    evt.preventDefault();
+    const currentCity = evt.target.value;
+    const currentId = CITIES.find((x) => x.city === currentCity)["id"];
+    this._destination = destinations.find((x) => x.id === currentId);
+    this.updateElement({ destination: currentId });
+  };
+
+  _typeChangeHandler = (evt) => {
+    this._offers = offersByType.find((x) => x.type === evt.target.value)[
+      "offers"
+    ];
+    this.updateElement({ type: evt.target.value, offers: [] });
+  };
+
+  _restoreHandlers = () => {
+    this._setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.submit);
+    this.setButtonClickHandler(this._callback.click);
+  };
+
+  _setInnerHandlers = () => {
+    this.element
+      .querySelector(".event__type-group")
+      .addEventListener("change", this._typeChangeHandler);
+    this.element
+      .querySelector(".event__input--destination")
+      .addEventListener("change", this._destinationChangeHandler);
+    this.element
+      .querySelector(".event__section--offers")
+      .addEventListener("change", this._offersChangeHandler);
+  };
+
+  static parsePointToState = (dot) => ({ ...dot });
+
+  static parseStateToPoint = (state) => ({ ...state });
 }
 
 export default FormChangeView;
