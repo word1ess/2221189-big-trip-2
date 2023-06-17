@@ -101,12 +101,25 @@ class DotView extends AbstractView {
 
   setEditClickHandler = (cb) => {
     this._callback.click = cb;
-    this.element.addEventListener("click", this._editClickHandler);
+    this.element
+      .querySelector(".event__rollup-btn")
+      .addEventListener("click", this._editClickHandler);
   };
 
   _editClickHandler = (e) => {
     e.preventDefault();
     this._callback.click();
+  };
+
+  _setFavoriteClickHandler = (cb) => {
+    this._callback.favoriteClick = cb;
+    this.element
+      .querySelector(".event__favorite-btn")
+      .addEventListener("click", this._favoriteClickHandler);
+  };
+  _favoriteClickHandler = (e) => {
+    e.preventDefault();
+    this._callback.favoriteClick();
   };
 }
 
