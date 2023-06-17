@@ -20,27 +20,40 @@ const filter = {
   [FILTERS_TYPE.PAST]: (dots) => dots.filter((dot) => isDotsAlive(dot.dateTo)),
 };
 
-const sortedDots = {
-  [SORTED_TYPE.DAY]: (dots) =>
-    dots.sort((prev, next) => getDifference(next.dateFrom, prev.dateFrom, "")),
-  [SORTED_TYPE.TIME]: (dots) =>
-    dots.sort(
-      (prev, next) =>
-        getDifference(prev.dateFrom, prev.dateTo, "minute") -
-        getDifference(next.dateFrom, next.dateTo, "minute")
-    ),
-  [SORTED_TYPE.PRICE]: (dots) =>
-    dots.sort((prev, next) => prev.basePrice - next.basePrice),
-};
+// const sortedDots = {
+//   [SORTED_TYPE.DAY]: (dots) =>
+//     dots.sort((prev, next) => getDifference(next.dateFrom, prev.dateFrom, "")),
+//   [SORTED_TYPE.TIME]: (dots) =>
+//     dots.sort(
+//       (prev, next) =>
+//         getDifference(prev.dateFrom, prev.dateTo, "minute") -
+//         getDifference(next.dateFrom, next.dateTo, "minute")
+//     ),
+//   [SORTED_TYPE.PRICE]: (dots) =>
+//     dots.sort((prev, next) => prev.basePrice - next.basePrice),
+// };
 
 const updateItem = (items, update) =>
   items.map((item) => (item.id === update.id ? update : item));
+
+const sortByDay = (dots) =>
+  dots.sort((prev, next) => getDifference(next.dateFrom, prev.dateFrom, ""));
+const sortByTime = (dots) =>
+  dots.sort(
+    (prev, next) =>
+      getDifference(prev.dateFrom, prev.dateTo, "second") -
+      getDifference(next.dateFrom, next.dateTo, "second")
+  );
+const sortByPrice = (dots) =>
+  dots.sort((prev, next) => prev.basePrice - next.basePrice);
 export {
   getRandomInteger,
   humanizeDate,
   humanizeTime,
   getDifference,
   filter,
-  sortedDots,
   updateItem,
+  sortByTime,
+  sortByDay,
+  sortByPrice,
 };

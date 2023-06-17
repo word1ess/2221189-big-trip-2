@@ -3,24 +3,26 @@ import DotView from "../view/Dot";
 import DotsView from "../view/DotsList";
 import SortView from "../view/Sort";
 import EmptyView from "../view/Empty";
-import generateSortedDots from "../data/sorted.js";
 import DotPresenter from "./dot-presenter.js";
-import { updateItem } from "../utils";
+import { updateItem, sortByDay, sortByTime, sortByPrice } from "../utils";
 import { SORTED_TYPE } from "../constants.js";
 
 class TripView {
   constructor(container, dotsModel) {
     this._component = new DotsView();
+    this._dotPresenter = new Map();
+    this._sorting = new SortView();
     this._container = container;
     this._dotsModel = dotsModel;
-    this._sortedDots = generateSortedDots(this._dotsModel._dots);
-    this._dotPresenter = new Map();
+    this._currSorting = SORTED_TYPE.PRICE;
     this._listDots = [];
+    this._sourcedListDots = [];
   }
 
   init() {
-    this._listDots = this._dotsModel._dots;
+    this._listDots = sortByPrice(this._dotsModel._dots);
     this._renderWay();
+    this._sourcedListDots = this._listDots;
   }
 
   _renderEmptyScreen = () => {
@@ -31,8 +33,28 @@ class TripView {
     );
   };
 
-  _renderSortedDots = () => {
-    render(new SortView(this._sortedDots), this._container, "beforeend");
+  _sortDots = (sortType) => {
+    switch (sortType) {
+      case SORTED_TYPE.DAY:
+        this._listDots = sortByDay(this._listDots);
+        break;
+      case SORTED_TYPE.TIME:
+        this._listDots = sortByTime(this._listDots);
+        break;
+      default:
+        this._listDots = sortByPrice(this._listDots);
+    }
+    this._currSorting = sortType;
+  };
+
+  _handleSortTypeChange = (sortType) => {
+    if (sortType === this._currSorting) {
+      return;
+    }
+
+    this._sortDots(sortType);
+    this._clearDotsList();
+    this._renderDots();
   };
 
   _renderNewDot = () => {
@@ -66,6 +88,11 @@ class TripView {
     this._renderEmptyScreen();
   }
 
+  _renderSortedDots = () => {
+    render(this._sorting, this._container, "beforeend");
+    this._sorting.setSortTypeChangeHandler(this._handleSortTypeChange);
+  };
+
   _renderDot(dot) {
     const dotPresenter = new DotPresenter(
       this._dotsModel,
@@ -77,13 +104,14 @@ class TripView {
     this._dotPresenter.set(dot.id, dotPresenter);
   }
 
-  _clearDontList = () => {
-    this._dotPresenter.forEach((el) => el.destroy);
+  _clearDotsList = () => {
+    this._dotPresenter.forEach((el) => el.destroy());
     this._dotPresenter.clear();
   };
 
   _handleDotChange = (newDot) => {
     this._listDots = updateItem(this._listDots, newDot);
+    this._sourcedListDots = updateItem(this._sourcedListDots, newDot);
     this._dotPresenter.get(newDot.id).init(newDot);
   };
 
