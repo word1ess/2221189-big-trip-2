@@ -10,7 +10,7 @@ const generateOffer = (id) => ({
   price: getRandomInteger(1, 200),
 });
 
-const OffersByType = [
+const offersByType = [
   {
     type: "taxi",
     offers: [generateOffer(1), generateOffer(2), generateOffer(3)],
@@ -49,4 +49,4 @@ const OffersByType = [
   },
 ];
 
-export default OffersByType;
+export default offersByType;

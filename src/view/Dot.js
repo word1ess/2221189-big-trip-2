@@ -1,8 +1,13 @@
 import AbstractView from "../framework/view/abstract-view.js";
-import { humanizeDate, humanizeTime, getDifference } from "../utils";
+import {
+  humanizeDate,
+  humanizeTime,
+  getDifference,
+  getFinalPrice,
+} from "../utils";
 
-const dotTemplate = (point, currentOffers, currentDesctination) => {
-  const { type, basePrice, dateFrom, dateTo, isFavorite, offers } = point;
+const dotTemplate = (dot, currentOffers, currentDesctination) => {
+  const { type, basePrice, dateFrom, dateTo, isFavorite, offers } = dot;
 
   const date = dateFrom !== null ? humanizeDate(dateFrom, "D MMMM") : "June 9";
 
@@ -72,7 +77,10 @@ const dotTemplate = (point, currentOffers, currentDesctination) => {
         <p class="event__duration">${calculateTimeSpent()}</p>
         </div>
         <p class="event__price">
-        &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
+        &euro;&nbsp;<span class="event__price-value">${getFinalPrice(
+          currentOffers,
+          dot
+        )}</span>
         </p>
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">${createOffersElement()}</ul>

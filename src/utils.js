@@ -33,6 +33,15 @@ const filter = {
 //     dots.sort((prev, next) => prev.basePrice - next.basePrice),
 // };
 
+const getFinalPrice = (currentOffers, dot) => {
+  let finalPrice = dot.basePrice;
+  dot.offers.forEach((id) => {
+    finalPrice += currentOffers[id - 1]["price"];
+  });
+
+  return finalPrice;
+};
+
 const updateItem = (items, update) =>
   items.map((item) => (item.id === update.id ? update : item));
 
@@ -44,13 +53,18 @@ const sortByTime = (dots) =>
       getDifference(prev.dateFrom, prev.dateTo, "second") -
       getDifference(next.dateFrom, next.dateTo, "second")
   );
-const sortByPrice = (dots) =>
-  dots.sort((prev, next) => prev.basePrice - next.basePrice);
+const sortByPrice = (dotsModel) =>
+  dotsModel._dots.sort((prev, next) => {
+    const prevFinalPrice = getFinalPrice(dotsModel.getOffers(prev), prev);
+    const nextFinalPrice = getFinalPrice(dotsModel.getOffers(next), next);
+    return prevFinalPrice - nextFinalPrice;
+  });
 export {
   getRandomInteger,
+  getDifference,
+  getFinalPrice,
   humanizeDate,
   humanizeTime,
-  getDifference,
   filter,
   updateItem,
   sortByTime,
