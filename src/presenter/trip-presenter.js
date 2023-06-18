@@ -1,8 +1,8 @@
 import { render } from "../framework/render.js";
-import DotView from "../view/Dot";
-import DotsView from "../view/DotsList";
-import SortView from "../view/Sort";
-import EmptyView from "../view/Empty";
+import DotView from "../view/dot";
+import DotsView from "../view/dots-list";
+import SortView from "../view/sort";
+import EmptyView from "../view/empty-screen";
 import DotPresenter from "./dot-presenter.js";
 import { updateItem, sortByDay, sortByTime, sortByPrice } from "../utils";
 import { SORTED_TYPE } from "../constants.js";

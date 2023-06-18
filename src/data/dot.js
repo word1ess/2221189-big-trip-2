@@ -1,9 +1,9 @@
 import { getRandomInteger } from "../utils";
-import { TYPES_POINT } from "../constants";
+import { TYPE_POINT } from "../constants";
 import { nanoid } from "nanoid";
 
 const generateTypeDot = () =>
-  TYPES_POINT[getRandomInteger(0, TYPES_POINT.length - 1)];
+  TYPE_POINT[getRandomInteger(0, TYPE_POINT.length - 1)];
 
 const identifyFavorite = () => {
   const id = getRandomInteger();

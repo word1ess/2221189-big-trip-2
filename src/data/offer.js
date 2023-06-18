@@ -1,8 +1,8 @@
 import { getRandomInteger } from "../utils";
-import { TITLES_OFFER } from "../constants";
+import { TITLE_OFFER } from "../constants";
 
 const generateTitleOffer = () =>
-  TITLES_OFFER[getRandomInteger(0, TITLES_OFFER.length - 1)];
+  TITLE_OFFER[getRandomInteger(0, TITLE_OFFER.length - 1)];
 
 const generateOffer = (id) => ({
   id: id,

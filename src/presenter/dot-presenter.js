@@ -1,7 +1,7 @@
 import { MODE_FOR_DOT } from "../constants";
 import { render, replace, remove } from "../framework/render";
-import DotView from "../view/Dot";
-import FormChangeView from "../view/FormChange";
+import DotView from "../view/dot";
+import FormChangeView from "../view/form-change";
 
 class DotPresenter {
   constructor(dots, listDot, data, modeChange) {

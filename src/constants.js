@@ -34,7 +34,7 @@ const DESCRIPTIONS = [
   "In rutrum ac purus sit amet tempus.",
 ];
 
-const TITLES_OFFER = [
+const TITLE_OFFER = [
   "Add a child safety seat",
   "Stay overnight",
   "Add lunch",
@@ -46,7 +46,7 @@ const TITLES_OFFER = [
   "Upgrade to a business class",
 ];
 
-const TYPES_POINT = [
+const TYPE_POINT = [
   "taxi",
   "bus",
   "train",
@@ -87,9 +87,9 @@ const MODE_FOR_DOT = {
 
 export {
   CITIES,
-  TITLES_OFFER,
+  TITLE_OFFER,
   DESCRIPTIONS,
-  TYPES_POINT,
+  TYPE_POINT,
   COUNT_DOT,
   FILTERS_TYPE,
   FILTERS_MESSAGE,

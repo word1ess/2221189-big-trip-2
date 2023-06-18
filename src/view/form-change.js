@@ -1,12 +1,11 @@
-import AbstractView from "../framework/view/abstract-view.js";
+import "flatpickr/dist/flatpickr.min.css";
 import AbstractStatefulView from "../framework/view/abstract-stateful-view";
-import { humanizeDate, humanizeTime, getFinalPrice } from "../utils";
-import destinations from "../data/destination.js";
-import { CITIES } from "../constants.js";
 import dayjs from "dayjs";
 import flatpickr from "flatpickr";
-import "flatpickr/dist/flatpickr.min.css";
+import { CITIES } from "../constants.js";
 import offersByType from "../data/offer.js";
+import destinations from "../data/destination.js";
+import { humanizeDate, humanizeTime, getFinalPrice } from "../utils";
 
 const formChangeTemplate = (dot, currentOffers, currentDestination) => {
   const { type, basePrice, dateFrom, dateTo, offers } = dot;
@@ -214,23 +213,36 @@ class FormChangeView extends AbstractStatefulView {
   get template() {
     return formChangeTemplate(this._state, this._offers, this._destination);
   }
+
+  reset = (dot) => {
+    this._offers = this._prevOffers;
+    this._destination = this._destination;
+    this.updateElement(FormChangeView.parseDotToState(dot));
+  };
+  removeElement = () => {
+    super.removeElement();
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+  };
+
   setFormSubmitHandler = (cb) => {
     this._callback.submit = cb;
     this.element
       .querySelector("form")
       .addEventListener("submit", this._formSubmitHandler);
   };
-
-  _formSubmitHandler = (e) => {
-    e.preventDefault();
-    this._callback.submit(FormChangeView.parseStateToDot(this._state));
-  };
-
   setButtonClickHandler = (cb) => {
     this._callback.click = cb;
     this.element
       .querySelector(".event__rollup-btn")
       .addEventListener("click", this._buttonClickHandler);
+  };
+
+  _formSubmitHandler = (e) => {
+    e.preventDefault();
+    this._callback.submit(FormChangeView.parseStateToDot(this._state));
   };
 
   _buttonClickHandler = (e) => {
@@ -289,26 +301,12 @@ class FormChangeView extends AbstractStatefulView {
       .addEventListener("change", this._priceChangeHandler);
   };
 
-  reset = (dot) => {
-    this._offers = this._prevOffers;
-    this._destination = this._destination;
-    this.updateElement(FormChangeView.parseDotToState(dot));
-  };
-
   _restoreHandlers = () => {
     this._setInnerHandlers();
     this._setDatePickerFrom();
     this._setDatePickerTo();
     this.setFormSubmitHandler(this._callback.submit);
     this.setButtonClickHandler(this._callback.click);
-  };
-
-  removeElement = () => {
-    super.removeElement();
-    if (this._datepicker) {
-      this._datepicker.destroy();
-      this._datepicker = null;
-    }
   };
 
   _dotDateFromChangeHandler = ([userDate]) => {
