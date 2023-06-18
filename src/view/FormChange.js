@@ -1,8 +1,12 @@
 import AbstractView from "../framework/view/abstract-view.js";
 import AbstractStatefulView from "../framework/view/abstract-stateful-view";
-import { humanizeDate, humanizeTime } from "../utils";
+import { humanizeDate, humanizeTime, getFinalPrice } from "../utils";
 import destinations from "../data/destination.js";
 import { CITIES } from "../constants.js";
+import dayjs from "dayjs";
+import flatpickr from "flatpickr";
+import "flatpickr/dist/flatpickr.min.css";
+import offersByType from "../data/offer.js";
 
 const formChangeTemplate = (dot, currentOffers, currentDestination) => {
   const { type, basePrice, dateFrom, dateTo, offers } = dot;
@@ -159,7 +163,10 @@ const formChangeTemplate = (dot, currentOffers, currentDestination) => {
               <span class="visually-hidden">Price</span>
               &euro;
               </label>
-              <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+              <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${getFinalPrice(
+                currentOffers,
+                dot
+              )}">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -193,9 +200,16 @@ const formChangeTemplate = (dot, currentOffers, currentDestination) => {
 class FormChangeView extends AbstractStatefulView {
   constructor(dot, offers, destination) {
     super();
-    this._state = FormChangeView.parsePointToState(dot);
+    this._state = FormChangeView.parseDotToState(dot);
     this._offers = offers;
     this._destination = destination;
+    this._prevOffers = offers;
+    this._prevDestination = destination;
+    this._datePicker;
+
+    this._setDatePickerTo();
+    this._setDatePickerFrom();
+    this._setInnerHandlers();
   }
   get template() {
     return formChangeTemplate(this._state, this._offers, this._destination);
@@ -209,7 +223,7 @@ class FormChangeView extends AbstractStatefulView {
 
   _formSubmitHandler = (e) => {
     e.preventDefault();
-    this._callback.submit(FormChangeView.parseStateToPoint(this._state));
+    this._callback.submit(FormChangeView.parseStateToDot(this._state));
   };
 
   setButtonClickHandler = (cb) => {
@@ -224,8 +238,8 @@ class FormChangeView extends AbstractStatefulView {
     this._callback.click();
   };
 
-  _offersChangeHandler = (evt) => {
-    const checkedOfferId = Number(evt.target.id.slice(-1));
+  _offersChangeHandler = (e) => {
+    const checkedOfferId = Number(e.target.id.slice(-1));
     if (this._state.offers.includes(checkedOfferId)) {
       this._state.offers = this._state.offers.filter(
         (x) => x !== checkedOfferId
@@ -238,25 +252,26 @@ class FormChangeView extends AbstractStatefulView {
     });
   };
 
-  _destinationChangeHandler = (evt) => {
-    evt.preventDefault();
-    const currentCity = evt.target.value;
+  _destinationChangeHandler = (e) => {
+    e.preventDefault();
+    const currentCity = e.target.value;
     const currentId = CITIES.find((x) => x.city === currentCity)["id"];
     this._destination = destinations.find((x) => x.id === currentId);
     this.updateElement({ destination: currentId });
   };
 
-  _typeChangeHandler = (evt) => {
-    this._offers = offersByType.find((x) => x.type === evt.target.value)[
+  _typeChangeHandler = (e) => {
+    this._offers = offersByType.find((x) => x.type === e.target.value)[
       "offers"
     ];
-    this.updateElement({ type: evt.target.value, offers: [] });
+    this.updateElement({ type: e.target.value, offers: [] });
   };
 
-  _restoreHandlers = () => {
-    this._setInnerHandlers();
-    this.setFormSubmitHandler(this._callback.submit);
-    this.setButtonClickHandler(this._callback.click);
+  _priceChangeHandler = (e) => {
+    e.preventDefault();
+    this._setState({
+      basePrice: Number(e.target.value),
+    });
   };
 
   _setInnerHandlers = () => {
@@ -269,11 +284,83 @@ class FormChangeView extends AbstractStatefulView {
     this.element
       .querySelector(".event__section--offers")
       .addEventListener("change", this._offersChangeHandler);
+    this.element
+      .querySelector(".event__input--price")
+      .addEventListener("change", this._priceChangeHandler);
   };
 
-  static parsePointToState = (dot) => ({ ...dot });
+  reset = (dot) => {
+    this._offers = this._prevOffers;
+    this._destination = this._destination;
+    this.updateElement(FormChangeView.parseDotToState(dot));
+  };
 
-  static parseStateToPoint = (state) => ({ ...state });
+  _restoreHandlers = () => {
+    this._setInnerHandlers();
+    this._setDatePickerFrom();
+    this._setDatePickerTo();
+    this.setFormSubmitHandler(this._callback.submit);
+    this.setButtonClickHandler(this._callback.click);
+  };
+
+  removeElement = () => {
+    super.removeElement();
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+  };
+
+  _dotDateFromChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateFrom: userDate,
+    });
+  };
+
+  _dotDateToChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateTo: userDate,
+    });
+  };
+
+  _setDatePickerFrom = () => {
+    if (this._state.dateFrom) {
+      this._datepicker = flatpickr(
+        this.element.querySelector("#event-start-time-1"),
+        {
+          enableTime: true,
+          dateFormat: "d/m/y H:i",
+          defaultDate: this._state.dateFrom,
+          minDate: this._state.dateFrom,
+          maxDate: this._state.dateTo,
+          onChange: this._dotDateFromChangeHandler,
+        }
+      );
+    }
+  };
+
+  _setDatePickerTo = () => {
+    if (this._state.dateTo) {
+      this._datepicker = flatpickr(
+        this.element.querySelector("#event-end-time-1"),
+        {
+          enableTime: true,
+          dateFormat: "d/m/y H:i",
+          defaultDate: this._state.dateTo,
+          minDate: this._state.dateFrom,
+          onChange: this._dotDateToChangeHandler,
+        }
+      );
+    }
+  };
+
+  static parseDotToState = (dot) => ({
+    ...dot,
+    dateTo: dayjs(dot.dateTo).toDate(),
+    dateFrom: dayjs(dot.dateFrom).toDate(),
+  });
+
+  static parseStateToDot = (state) => ({ ...state });
 }
 
 export default FormChangeView;

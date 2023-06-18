@@ -14,13 +14,13 @@ class TripView {
     this._sorting = new SortView();
     this._container = container;
     this._dotsModel = dotsModel;
-    this._currSorting = SORTED_TYPE.PRICE;
+    this._currSorting = SORTED_TYPE.DAY;
     this._listDots = [];
     this._sourcedListDots = [];
   }
 
   init() {
-    this._listDots = sortByPrice(this._dotsModel._dots);
+    this._listDots = sortByDay(this._dotsModel._dots);
     this._renderWay();
     this._sourcedListDots = this._listDots;
   }
@@ -35,14 +35,14 @@ class TripView {
 
   _sortDots = (sortType) => {
     switch (sortType) {
-      case SORTED_TYPE.DAY:
-        this._listDots = sortByDay(this._listDots);
+      case SORTED_TYPE.PRICE:
+        this._listDots = sortByPrice(this._dotsModel);
         break;
       case SORTED_TYPE.TIME:
         this._listDots = sortByTime(this._listDots);
         break;
       default:
-        this._listDots = sortByPrice(this._listDots);
+        this._listDots = [...this._sourcedListDots];
     }
     this._currSorting = sortType;
   };

@@ -64,12 +64,12 @@ class DotPresenter {
   };
 
   _handleEditSubmitClick = () => {
-    this._replaceDotToForm(this._points);
+    this._replaceDotToForm(this._dot);
     document.addEventListener("keydown", this._onEscKeyDown);
   };
-  _handleFormSubmitClick = () => {
+  _handleFormSubmitClick = (dot) => {
     this._replaceFormToDot();
-    this._data(this._dot);
+    this._data(dot);
     document.removeEventListener("keydown", this._onEscKeyDown);
   };
 
