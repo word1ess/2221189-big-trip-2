@@ -1,7 +1,8 @@
-import { MODE_FOR_DOT } from "../constants";
+import { MODE_FOR_DOT, USER_ACTION, UPDATE_TYPE } from "../constants";
 import { render, replace, remove } from "../framework/render";
-import DotView from "../view/Dot";
-import FormChangeView from "../view/FormChange";
+import { getDifference } from "../utils";
+import DotView from "../view/dot";
+import FormChangeView from "../view/form-change";
 
 class DotPresenter {
   constructor(dots, listDot, data, modeChange) {
@@ -41,6 +42,7 @@ class DotPresenter {
     this._dotComponent.setEditClickHandler(this._handleEditSubmitClick);
     this._dotEditComponent.setFormSubmitHandler(this._handleFormSubmitClick);
     this._dotEditComponent.setButtonClickHandler(this._handeButtonClick);
+    this._dotEditComponent.setDeleteClickHandler(this._handleDeleteClick);
 
     if (!prevDotComponent || !prevDotChangeComponent) {
       render(this._dotComponent, this._listDotComponent, "beforeend");
@@ -60,22 +62,39 @@ class DotPresenter {
   };
 
   _handleFavoriteClick = () => {
-    this._data({ ...this._dot, isFavorite: !this._dot.isFavorite });
+    this._data(USER_ACTION.UPDATE_DOT, UPDATE_TYPE.MINOR, {
+      ...this._dot,
+      isFavorite: !this._dot.isFavorite,
+    });
   };
 
   _handleEditSubmitClick = () => {
     this._replaceDotToForm(this._dot);
     document.addEventListener("keydown", this._onEscKeyDown);
   };
-  _handleFormSubmitClick = (dot) => {
+  _handleFormSubmitClick = (update) => {
+    const isMinorUpdate =
+      this._dot.basePrice !== update.basePrice ||
+      this._dot._offers.toString() !== update._offers.toString() ||
+      getDifference(this._dot.dateTo, this._dot.dateFrom, "minute") !==
+        getDifference(this.update.dateTo, this.update.dateFrom, "minute");
+
     this._replaceFormToDot();
-    this._data(dot);
+    this._data(
+      USER_ACTION.UPDATE_DOT,
+      isMinorUpdate ? UPDATE_TYPE.MINOR : UPDATE_TYPE.PATCH,
+      dot
+    );
     document.removeEventListener("keydown", this._onEscKeyDown);
   };
 
   _handeButtonClick = () => {
     this._replaceFormToDot();
     document.removeEventListener("keydown", this._onEscKeyDown);
+  };
+
+  _handleDeleteClick = (dot) => {
+    this._data(USER_ACTION.DELETE_DOT, UPDATE_TYPE.MINOR, dot);
   };
 
   destroy = () => {

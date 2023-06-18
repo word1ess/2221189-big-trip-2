@@ -85,6 +85,18 @@ const MODE_FOR_DOT = {
   DEFAULT: "DEFAULT",
 };
 
+const USER_ACTION = {
+  UPDATE_DOT: "UPDATE_DOT",
+  ADD_DOT: "ADD_DOT",
+  DELETE_DOT: "DELETE_DOT",
+};
+
+const UPDATE_TYPE = {
+  PATCH: "PATCH",
+  MINOR: "MINOR",
+  MAJOR: "MAJOR",
+};
+
 export {
   CITIES,
   TITLES_OFFER,
@@ -95,4 +107,6 @@ export {
   FILTERS_MESSAGE,
   SORTED_TYPE,
   MODE_FOR_DOT,
+  USER_ACTION,
+  UPDATE_TYPE,
 };

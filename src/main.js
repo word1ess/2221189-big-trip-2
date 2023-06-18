@@ -1,7 +1,7 @@
 import { render } from "./framework/render";
 import TripView from "./presenter/trip-presenter";
 import FilterView from "./view/Filters";
-import DotsModel from "./model/DotsModel";
+import DotsModel from "./model/dots-model";
 import generateFilter from "./data/filter";
 
 const filterContainer = document.querySelector(".trip-controls__filters");

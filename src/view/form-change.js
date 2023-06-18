@@ -301,6 +301,8 @@ class FormChangeView extends AbstractStatefulView {
     this._setDatePickerTo();
     this.setFormSubmitHandler(this._callback.submit);
     this.setButtonClickHandler(this._callback.click);
+    this.setButtonClickHandler(this._callback.click);
+    this.setDeleteClickHandler(this._callback.delete);
   };
 
   removeElement = () => {
@@ -352,6 +354,18 @@ class FormChangeView extends AbstractStatefulView {
         }
       );
     }
+  };
+
+  setDeleteClickHandler = (callback) => {
+    this._callback.delete = callback;
+    this.element
+      .querySelector(".event__reset-btn")
+      .addEventListener("click", this._deleteClickHandler);
+  };
+
+  _deleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.delete(FormChangeView.parseStateToDot(this._state));
   };
 
   static parseDotToState = (dot) => ({
